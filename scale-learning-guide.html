@@ -1,0 +1,494 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Bass Scale Learning Guide</title>
+<style>
+  :root {
+    --bg: #1a1a1a;
+    --surface: #242424;
+    --surface2: #2d2d2d;
+    --border: #3a3a3a;
+    --text: #e8e8e8;
+    --text-dim: #999;
+    --accent: #e11d26;
+    --accent-dim: #a8151c;
+    --green: #4caf50;
+    --amber: #ff9800;
+    --blue: #5c9eff;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', system-ui, sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.6;
+    padding: 0;
+  }
+
+  .header {
+    background: var(--surface);
+    border-bottom: 3px solid var(--accent);
+    padding: 2rem 2rem 1.5rem;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+  }
+
+  .header h1 { font-size: 1.6rem; font-weight: 700; letter-spacing: -0.02em; }
+  .header p { color: var(--text-dim); font-size: 0.85rem; margin-top: 0.25rem; }
+
+  .nav { display: flex; gap: 0.25rem; margin-top: 1rem; flex-wrap: wrap; }
+  .nav button { background: var(--surface2); border: 1px solid var(--border); color: var(--text-dim); padding: 0.4rem 0.9rem; font-size: 0.8rem; cursor: pointer; transition: all 0.15s; font-family: inherit; }
+  .nav button:hover { color: var(--text); border-color: #555; }
+  .nav button.active { background: var(--accent); color: #fff; border-color: var(--accent); }
+
+  .container { max-width: 900px; margin: 0 auto; padding: 2rem; }
+  .section { display: none; }
+  .section.active { display: block; }
+
+  h2 { font-size: 1.3rem; margin-bottom: 1rem; padding-bottom: 0.5rem; border-bottom: 2px solid var(--accent); }
+  h3 { font-size: 1.05rem; margin: 1.5rem 0 0.75rem; color: var(--blue); }
+  p { margin-bottom: 0.75rem; }
+
+  .card { background: var(--surface); border: 1px solid var(--border); padding: 1.25rem; margin-bottom: 1rem; }
+  .card-title { font-weight: 700; font-size: 1rem; margin-bottom: 0.5rem; display: flex; align-items: center; gap: 0.5rem; }
+  .badge { font-size: 0.65rem; padding: 0.15rem 0.5rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.05em; }
+  .badge-essential { background: var(--accent); color: #fff; }
+  .badge-important { background: var(--amber); color: #000; }
+  .badge-useful { background: var(--blue); color: #000; }
+
+  .formula { background: var(--bg); border: 1px solid var(--border); padding: 0.75rem 1rem; font-family: 'SF Mono', 'Fira Code', monospace; font-size: 0.85rem; margin: 0.75rem 0; color: var(--green); }
+  .interval-map { display: flex; gap: 0.25rem; flex-wrap: wrap; margin: 0.5rem 0; }
+  .interval-map span { background: var(--surface2); border: 1px solid var(--border); padding: 0.3rem 0.6rem; font-size: 0.8rem; font-family: monospace; min-width: 2rem; text-align: center; }
+  .interval-map span.root { background: var(--accent); color: #fff; border-color: var(--accent); }
+  .interval-map span.chord-tone { background: #2a4a2a; color: var(--green); border-color: #3a6a3a; }
+
+  .principle { background: var(--surface); border-left: 3px solid var(--accent); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .principle-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--accent); font-weight: 700; margin-bottom: 0.25rem; }
+  .mistake { background: var(--surface); border-left: 3px solid var(--amber); padding: 1rem 1.25rem; margin-bottom: 1rem; }
+  .mistake-label { font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.08em; color: var(--amber); font-weight: 700; margin-bottom: 0.25rem; }
+
+  .week-block { background: var(--surface); border: 1px solid var(--border); margin-bottom: 1rem; overflow: hidden; }
+  .week-header { background: var(--surface2); padding: 0.75rem 1.25rem; font-weight: 700; cursor: pointer; display: flex; justify-content: space-between; align-items: center; user-select: none; }
+  .week-header:hover { background: #353535; }
+  .week-body { padding: 1.25rem; display: none; }
+  .week-body.open { display: block; }
+
+  .session { background: var(--bg); border: 1px solid var(--border); padding: 1rem; margin-bottom: 0.75rem; }
+  .session-title { font-weight: 600; font-size: 0.85rem; color: var(--green); margin-bottom: 0.5rem; }
+  .time-block { display: flex; gap: 0.75rem; margin-bottom: 0.4rem; font-size: 0.85rem; }
+  .time-label { color: var(--text-dim); min-width: 55px; font-family: monospace; font-size: 0.8rem; }
+
+  .checklist { list-style: none; margin: 0.5rem 0; }
+  .checklist li { padding: 0.3rem 0; font-size: 0.85rem; padding-left: 1.25rem; position: relative; }
+  .checklist li::before { content: '>'; position: absolute; left: 0; color: var(--accent); font-weight: 700; }
+
+  .readiness { background: var(--surface); border: 1px solid var(--green); padding: 1rem 1.25rem; margin: 1rem 0; }
+  .readiness-title { color: var(--green); font-weight: 700; font-size: 0.85rem; margin-bottom: 0.5rem; }
+
+  table { width: 100%; border-collapse: collapse; margin: 1rem 0; font-size: 0.85rem; }
+  th { background: var(--surface2); padding: 0.6rem 0.75rem; text-align: left; font-weight: 600; border-bottom: 2px solid var(--accent); }
+  td { padding: 0.6rem 0.75rem; border-bottom: 1px solid var(--border); }
+  tr:hover td { background: var(--surface); }
+
+  .source { color: var(--text-dim); font-size: 0.75rem; margin-top: 0.5rem; }
+
+  .kaye-quote { background: var(--surface); border: 1px solid var(--border); padding: 1.25rem; margin: 1rem 0; font-style: italic; position: relative; }
+  .kaye-quote::before { content: '"'; font-size: 3rem; color: var(--accent); position: absolute; top: -0.25rem; left: 0.5rem; line-height: 1; }
+  .kaye-quote p { padding-left: 2rem; margin-bottom: 0.25rem; }
+  .kaye-quote .attr { font-style: normal; color: var(--text-dim); font-size: 0.8rem; padding-left: 2rem; }
+
+  .scale-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin: 1rem 0; }
+  .progress-bar { background: var(--bg); height: 6px; margin-top: 0.5rem; overflow: hidden; }
+  .progress-fill { height: 100%; background: var(--accent); transition: width 0.3s; }
+
+  @media (max-width: 600px) {
+    .scale-grid { grid-template-columns: 1fr; }
+    .container { padding: 1rem; }
+    .header { padding: 1.25rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="header">
+  <h1>Bass Scales: What to Learn & How to Learn It</h1>
+  <p>Evidence-based guide. Built from research across music cognition science, Carol Kaye, Victor Wooten, Scott's Bass Lessons, StudyBass, and TalkBass.</p>
+  <div class="nav">
+    <button class="active" onclick="showSection('how')">How to Practice</button>
+    <button onclick="showSection('scales')">The Scales</button>
+    <button onclick="showSection('plan')">12-Week Plan</button>
+    <button onclick="showSection('mistakes')">Common Mistakes</button>
+    <button onclick="showSection('readiness')">Readiness Tests</button>
+  </div>
+</div>
+
+<div class="container">
+<div class="section active" id="how">
+  <h2>How to Practice Scales (So They Actually Stick)</h2>
+  <p>Running scales up and down is the least effective way to learn them. The research is clear on what works better. Here are the five principles that matter, each backed by evidence.</p>
+
+  <div class="principle">
+    <div class="principle-label">Principle 1: Spaced Repetition</div>
+    <p><strong>Short sessions, spread out, beat marathon sessions every time.</strong> A meta-analysis across motor learning studies found that distributing repetitions across five sessions instead of cramming them into one improved retention by 1.9x after 12 hours and 5.1x after 36 hours.</p>
+    <p>In practice: 15-20 focused minutes daily is worth more than a 2-hour Sunday grind. Your brain consolidates learning during rest. The practice session plants the seed; sleep and time grow it.</p>
+    <p><strong>Optimal review gap:</strong> aim for 10-30% of your target retention interval. Want to remember a scale in a week? Review it after 1-2 days. Want to remember it in a month? Review after 3-5 days.</p>
+    <div class="source">Source: PMC meta-analysis on distributed vs massed practice, Piano Practice Assistant</div>
+  </div>
+
+  <div class="principle">
+    <div class="principle-label">Principle 2: Retrieval Practice (The Testing Effect)</div>
+    <p><strong>Trying to recall something is more effective than re-studying it.</strong> Roediger & Karpicke (2006) showed that tests enhance later retention more than additional study, even without feedback.</p>
+    <p>For bass: instead of running the same scale from the same fret every time, test yourself. Start from a random note. Jump between non-adjacent scale degrees. Play the scale over a backing track where you have to find the notes in real time. The effort of searching your memory for the right note builds stronger pathways than passively repeating a pattern you already know.</p>
+    <div class="source">Source: Roediger & Karpicke, Psychological Science (2006)</div>
+  </div>
+
+  <div class="principle">
+    <div class="principle-label">Principle 3: Interleaving (After the First Few Weeks)</div>
+    <p><strong>Mixing scales within a session beats practicing one at a time.</strong> This is counterintuitive because interleaving feels harder and slower. That difficulty is the point. It's called "desirable difficulty" and it forces your brain to distinguish between similar patterns.</p>
+    <p><strong>The catch:</strong> interleaving is too hard for the first couple of weeks on a brand-new scale. Start with blocked practice (one scale per session) for 2-3 weeks, then switch to mixing. Instead of "10 min major, 10 min minor," do "3 min major, 3 min minor, 2 min major from a different position, 2 min pentatonic."</p>
+    <div class="source">Source: Frontiers in Psychology, Colourful Keys music education research</div>
+  </div>
+
+  <div class="principle">
+    <div class="principle-label">Principle 4: Say the Notes. Sing the Notes.</div>
+    <p><strong>Name every note as you play it.</strong> This connects three systems: your fingers (motor), your voice (auditory), and your brain (cognitive). Players who only learn finger patterns build disconnected muscle memory. They can play a scale but can't find it from a different starting point, can't hear it in a song, and can't adapt it on the fly.</p>
+    <p>Even better: sing the note before you play it. If you can hear the next note in your head before your finger lands, you're internalising the sound, not just the shape.</p>
+    <div class="source">Source: StudyBass, Gary Willis, Carol Kaye teaching method</div>
+  </div>
+
+  <div class="principle">
+    <div class="principle-label">Principle 5: Apply Immediately to Music</div>
+    <p><strong>Every scale you learn should be used over a chord progression within the same session.</strong> Scales practiced in isolation become abstract theory. Scales practiced over backing tracks become musical vocabulary. Your ear learns how each note resolves (or creates tension) against the underlying harmony.</p>
+    <p>The goal: when you hear a chord change, your fingers move toward the right notes because your ear knows what comes next. That only develops through applied practice.</p>
+    <p>YouTube "bass backing track in [key]" works fine. Play root notes first, then add scale tones, then experiment with passing notes.</p>
+    <div class="source">Source: Scott's Bass Lessons, TalkBass community consensus</div>
+  </div>
+
+  <h3>Carol Kaye's Specific Approach</h3>
+  <div class="kaye-quote">
+    <p>Learn your chord scales. Understand how each note in the scale relates to the chord underneath it. That's what separates a musician from someone running patterns.</p>
+    <div class="attr">Carol Kaye's teaching philosophy (paraphrased from her published methods)</div>
+  </div>
+  <p>Kaye's method is distinct from most modern YouTube bass education. She doesn't teach scales as standalone patterns. She teaches <strong>chord scales</strong>: understanding which scale degree you're on relative to the chord at any moment. Her "Electric Bass Lines Vol. 3" covers scales and chords in all 12 keys with interval studies designed to cover the whole neck efficiently. Her emphasis is always performer-focused: learn to play well, fast, with good fingering habits. Not theory for theory's sake.</p>
+
+  <h3>Victor Wooten's Single-String Method</h3>
+  <p>Wooten advocates practicing scales on one string at a time. This forces you to think in intervals (whole step, half step) rather than visual box shapes. Play the entire major scale on just the G string. Then just the D string. Then A, then E. It's slower and harder, and that's why it works. You stop relying on finger patterns and start hearing the construction of the scale.</p>
+
+  <h3>Session Structure Template</h3>
+  <div class="session">
+    <div class="session-title">20-Minute Daily Session</div>
+    <div class="time-block"><span class="time-label">0-5 min</span> Scale pattern: full fretboard, ascending and descending, with metronome. Name notes.</div>
+    <div class="time-block"><span class="time-label">5-8 min</span> Single-string practice: play the scale on one string only. Different string each day.</div>
+    <div class="time-block"><span class="time-label">8-12 min</span> Intervals: play the scale in 3rds, then 4ths, then random jumps. Say the interval name.</div>
+    <div class="time-block"><span class="time-label">12-17 min</span> Applied: play over a backing track in the same key. Start with roots and chord tones, add passing notes.</div>
+    <div class="time-block"><span class="time-label">17-20 min</span> Retrieval test: close your eyes, pick a random starting note, play the scale. Did you nail it?</div>
+  </div>
+</div>
+
+<!-- THE SCALES -->
+<div class="section" id="scales">
+  <h2>The Scales (In Order of Priority)</h2>
+  <p>Six scales cover roughly 80% of what a working bassist needs. They're listed here in learning order, not alphabetical order. Each one builds on the last.</p>
+
+  <div class="card">
+    <div class="card-title">1. Major Scale <span class="badge badge-essential">Essential</span></div>
+    <p>The foundation of everything. Every other scale on this list is defined by how it differs from the major scale. Learn this one properly and everything else clicks faster.</p>
+    <div class="formula">Formula: W - W - H - W - W - W - H</div>
+    <div class="formula">Degrees: 1 - 2 - 3 - 4 - 5 - 6 - 7</div>
+    <p style="font-size:0.85rem">Example in C:</p>
+    <div class="interval-map">
+      <span class="root">C(1)</span><span>D(2)</span><span class="chord-tone">E(3)</span><span>F(4)</span><span class="chord-tone">G(5)</span><span>A(6)</span><span class="chord-tone">B(7)</span><span class="root">C(8)</span>
+    </div>
+    <p style="font-size:0.85rem; color: var(--text-dim); margin-top:0.5rem"><strong>Where you'll hear it:</strong> Pop, folk, country, classical, any "bright" or "happy" sounding music. Paul McCartney's melodic bass lines live here.</p>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Chord tones to emphasise:</strong> Root (1), major 3rd (3), perfect 5th (5), major 7th (7). These are your safe landing notes on strong beats.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">2. Natural Minor Scale (Aeolian) <span class="badge badge-essential">Essential</span></div>
+    <p>Same notes as the major scale but starting from the 6th degree. If you know C major, you already know A natural minor. The relationship between these two scales is the first big "aha" moment in music theory.</p>
+    <div class="formula">Formula: W - H - W - W - H - W - W</div>
+    <div class="formula">Degrees: 1 - 2 - b3 - 4 - 5 - b6 - b7</div>
+    <p style="font-size:0.85rem">Example in A:</p>
+    <div class="interval-map">
+      <span class="root">A(1)</span><span>B(2)</span><span class="chord-tone">C(b3)</span><span>D(4)</span><span class="chord-tone">E(5)</span><span>F(b6)</span><span class="chord-tone">G(b7)</span><span class="root">A(8)</span>
+    </div>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Where you'll hear it:</strong> Rock, pop ballads, metal, most "dark" or "sad" sounding music.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">3. Minor Pentatonic <span class="badge badge-essential">Essential</span></div>
+    <p>Five notes from the natural minor. No "wrong" notes. This is the bass line vending machine. Drop a quarter in, get a usable groove out. Its simplicity is its power: fewer notes means stronger, more rhythmic lines.</p>
+    <div class="formula">Formula: m3 - W - W - m3 - W</div>
+    <div class="formula">Degrees: 1 - b3 - 4 - 5 - b7</div>
+    <p style="font-size:0.85rem">Example in A:</p>
+    <div class="interval-map">
+      <span class="root">A(1)</span><span class="chord-tone">C(b3)</span><span>D(4)</span><span class="chord-tone">E(5)</span><span class="chord-tone">G(b7)</span><span class="root">A(8)</span>
+    </div>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Where you'll hear it:</strong> Rock, blues, funk, reggae, soul. The backbone of classic rock bass. Think "Sunshine of Your Love," every blues jam ever.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">4. Major Pentatonic <span class="badge badge-important">Important</span></div>
+    <p>Five notes from the major scale. Same shapes as minor pentatonic but with a different root. Once you know one, you basically know the other. Brighter sound, pairs with major and dominant chords.</p>
+    <div class="formula">Formula: W - W - m3 - W - m3</div>
+    <div class="formula">Degrees: 1 - 2 - 3 - 5 - 6</div>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Where you'll hear it:</strong> Country, folk, rock, pop. Bright fills and melodic lines.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">5. Blues Scale <span class="badge badge-important">Important</span></div>
+    <p>Minor pentatonic plus one note: the flat 5th (the "blue note"). Minimal effort for a massive expansion in sound. That chromatic passing tone between the 4th and 5th gives you all the grit and tension blues music lives on.</p>
+    <div class="formula">Degrees: 1 - b3 - 4 - b5 - 5 - b7</div>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Where you'll hear it:</strong> Blues, rock, jazz, funk. The b5 is a passing tone, not a landing note. Slide through it.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">6. Dorian Mode <span class="badge badge-useful">Intermediate</span></div>
+    <p>Natural minor with a raised 6th. The difference is subtle but important: Dorian sounds less "sad" than natural minor. It's the default choice over minor 7th chords in jazz and funk.</p>
+    <div class="formula">Degrees: 1 - 2 - b3 - 4 - 5 - 6 - b7</div>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Where you'll hear it:</strong> Jazz standards, funk, soul, some folk. "So What" by Miles Davis is pure Dorian.</p>
+  </div>
+
+  <div class="card">
+    <div class="card-title">7. Mixolydian Mode <span class="badge badge-useful">Intermediate</span></div>
+    <p>Major scale with a flat 7th. The sound of dominant 7th chords. If you play rock, funk, or soul, you'll use this constantly whether you know it by name or not.</p>
+    <div class="formula">Degrees: 1 - 2 - 3 - 4 - 5 - 6 - b7</div>
+    <p style="font-size:0.85rem; color: var(--text-dim)"><strong>Where you'll hear it:</strong> Funk, soul, Motown, rock, reggae. Dominant-chord grooves. Earth, Wind & Fire territory.</p>
+  </div>
+
+  <h3>Priority Summary</h3>
+  <table>
+    <tr><th>Scale</th><th>Priority</th><th>Learn By</th><th>Difficulty</th></tr>
+    <tr><td>Major</td><td style="color:var(--accent)">Essential</td><td>Week 1-4</td><td>Medium</td></tr>
+    <tr><td>Natural Minor</td><td style="color:var(--accent)">Essential</td><td>Week 2-4</td><td>Easy (relative to major)</td></tr>
+    <tr><td>Minor Pentatonic</td><td style="color:var(--accent)">Essential</td><td>Week 3-5</td><td>Very easy</td></tr>
+    <tr><td>Major Pentatonic</td><td style="color:var(--amber)">Important</td><td>Week 4-6</td><td>Very easy</td></tr>
+    <tr><td>Blues Scale</td><td style="color:var(--amber)">Important</td><td>Week 5-6</td><td>Easy</td></tr>
+    <tr><td>Dorian</td><td style="color:var(--blue)">Intermediate</td><td>Week 7-9</td><td>Medium</td></tr>
+    <tr><td>Mixolydian</td><td style="color:var(--blue)">Intermediate</td><td>Week 9-12</td><td>Medium</td></tr>
+  </table>
+</div>
+
+<!-- 12-WEEK PLAN -->
+<div class="section" id="plan">
+  <h2>12-Week Scale Learning Plan</h2>
+  <p>20 minutes a day, 5 days a week. Consistency matters more than duration. Skip a day, that's fine. Skip a week, you'll feel it.</p>
+
+  <div class="week-block">
+    <div class="week-header" onclick="toggleWeek(this)"><span>Weeks 1-2: Major Scale Foundation</span><span>+</span></div>
+    <div class="week-body">
+      <p><strong>Goal:</strong> Learn the major scale in one key (start with G or C) across the full fretboard. Understand its construction. Be able to name every note.</p>
+      <div class="session">
+        <div class="session-title">Daily Session (20 min)</div>
+        <div class="time-block"><span class="time-label">5 min</span> Linear runs: play the scale from lowest available note to highest, ascending and descending. Use a metronome at a comfortable tempo. Name each note aloud as you play it.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Single-string practice: play the entire scale on one string. Different string each day. This forces interval awareness (W-W-H-W-W-W-H).</div>
+        <div class="time-block"><span class="time-label">5 min</span> Chord tone isolation: play only the root, 3rd, 5th, and 7th of the scale. These are your anchor points. Arpeggiate them in different orders.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Backing track: find a simple major-key backing track on YouTube. Play root notes on the chord changes. Once comfortable, add 3rds and 5ths.</div>
+      </div>
+      <div class="readiness">
+        <div class="readiness-title">Ready to move on when:</div>
+        <ul class="checklist">
+          <li>You can play the scale from any starting note on the fretboard without stopping</li>
+          <li>You can name every note as you play (not just finger autopilot)</li>
+          <li>You can recite the interval pattern (W-W-H-W-W-W-H) from memory</li>
+          <li>You can play it on any single string</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header" onclick="toggleWeek(this)"><span>Weeks 3-4: Natural Minor + Minor Pentatonic</span><span>+</span></div>
+    <div class="week-body">
+      <p><strong>Goal:</strong> Learn natural minor in the relative key (if you learned G major, learn E minor). See how they share the same notes. Then strip it down to minor pentatonic.</p>
+      <div class="session">
+        <div class="session-title">Daily Session (20 min)</div>
+        <div class="time-block"><span class="time-label">3 min</span> Major scale warm-up (maintenance). Different starting note each day.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Natural minor: full fretboard runs. Notice it's the same notes as your major scale, different root. Let that click.</div>
+        <div class="time-block"><span class="time-label">4 min</span> Minor pentatonic: strip the minor scale to just 5 notes (1-b3-4-5-b7). Play it everywhere. This is your new best friend.</div>
+        <div class="time-block"><span class="time-label">3 min</span> Comparison: play major scale, then minor scale from the same root. Hear the difference. The b3, b6, b7 are what make it "minor."</div>
+        <div class="time-block"><span class="time-label">5 min</span> Backing track: minor key. Use pentatonic notes over the changes. Experiment with rhythm and note choice.</div>
+      </div>
+      <p style="margin-top:1rem"><strong>Key insight this phase:</strong> Minor pentatonic has no "bad" notes. Every note works over a minor chord progression. This is why it's the most-used scale in popular music. Use this freedom to focus on rhythm and groove rather than note choice.</p>
+    </div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header" onclick="toggleWeek(this)"><span>Weeks 5-6: Major Pentatonic + Blues Scale</span><span>+</span></div>
+    <div class="week-body">
+      <p><strong>Goal:</strong> Add two more scales with minimal new learning. Major pentatonic is the same shapes as minor pentatonic (different root). Blues scale is minor pentatonic plus one note.</p>
+      <div class="session">
+        <div class="session-title">Daily Session (20 min)</div>
+        <div class="time-block"><span class="time-label">3 min</span> Interleaved warm-up: alternate between major and minor pentatonic. Switch every 30 seconds. This is where interleaving starts.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Major pentatonic: learn the relationship to minor pentatonic (same 5 positions, root shifted). Practice in the same key as your major scale.</div>
+        <div class="time-block"><span class="time-label">4 min</span> Blues scale: add the b5 to minor pentatonic. Practice sliding through it (it's a passing tone, not a destination).</div>
+        <div class="time-block"><span class="time-label">3 min</span> Intervals: play your strongest scale in 3rds (1-3, 2-4, 3-5, etc). This breaks the linear habit.</div>
+        <div class="time-block"><span class="time-label">5 min</span> 12-bar blues backing track. Use blues scale. Focus on landing chord tones on beat 1 of each chord change.</div>
+      </div>
+      <p style="margin-top:1rem"><strong>By now you have 5 scales.</strong> That covers the vast majority of rock, blues, pop, and folk bass playing. The next phase is about depth and sophistication, not breadth.</p>
+    </div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header" onclick="toggleWeek(this)"><span>Weeks 7-9: Dorian Mode + Multi-Key Fluency</span><span>+</span></div>
+    <div class="week-body">
+      <p><strong>Goal:</strong> Learn Dorian mode. More importantly, take everything you know into 2-3 new keys. This is where you stop being "good in G" and start being a bassist who knows scales.</p>
+      <div class="session">
+        <div class="session-title">Daily Session (20 min)</div>
+        <div class="time-block"><span class="time-label">3 min</span> Interleaved review: rotate through all 5 scales you know. 30 seconds each, random order.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Dorian mode: learn it as "natural minor with a raised 6th." Compare directly to natural minor. Hear the brightness that raised 6th adds.</div>
+        <div class="time-block"><span class="time-label">5 min</span> New key work: take major scale + minor pentatonic into a new key (D, A, or E are practical for bass). Prove you understand the pattern, not just the position.</div>
+        <div class="time-block"><span class="time-label">2 min</span> Retrieval test: close your eyes. Pick a random note. Play the major scale from it. Then minor pentatonic. Then blues. Speed doesn't matter. Accuracy does.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Backing track: Dorian or minor jazz/funk groove. Emphasise the natural 6th to hear what makes Dorian different.</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="week-block">
+    <div class="week-header" onclick="toggleWeek(this)"><span>Weeks 10-12: Mixolydian + Integration</span><span>+</span></div>
+    <div class="week-body">
+      <p><strong>Goal:</strong> Add Mixolydian. Begin integrating everything: switching between scales mid-song based on chord changes. This is where isolated knowledge becomes musical ability.</p>
+      <div class="session">
+        <div class="session-title">Daily Session (25 min)</div>
+        <div class="time-block"><span class="time-label">3 min</span> Full interleaved warm-up: all scales, random keys, random starting notes.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Mixolydian: "major with a flat 7th." Compare to major scale. Hear the dominant quality. This is the funk/soul sound.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Scale switching: play a ii-V-I progression. Dorian over the ii, Mixolydian over the V, major over the I. This is the real application of modes.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Transcription: learn a bass line from a song you like by ear. Identify which scale it uses. This closes the loop between theory and music.</div>
+        <div class="time-block"><span class="time-label">5 min</span> Free play: backing track of your choice. Use whatever sounds right. Trust your ear. If you've done the work, it knows more than you think.</div>
+      </div>
+      <div class="readiness">
+        <div class="readiness-title">After 12 weeks you should be able to:</div>
+        <ul class="checklist">
+          <li>Play major, minor, both pentatonics, blues, Dorian, and Mixolydian in at least 3 keys</li>
+          <li>Name the notes and intervals as you play</li>
+          <li>Hear the difference between scales when someone else plays them</li>
+          <li>Use scales musically over chord changes, not just run them up and down</li>
+          <li>Identify which scale fits a song by ear (most of the time)</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <h3>After Week 12: Maintenance</h3>
+  <p>Once a scale is internalised, maintain it with 2-3 minutes of practice, 2-3 times per week. The spaced repetition curve means you need less and less reinforcement over time. Spend the bulk of your practice on application: learning songs, transcribing, playing with other people.</p>
+</div>
+
+<!-- COMMON MISTAKES -->
+<div class="section" id="mistakes">
+  <h2>Common Mistakes (And How to Avoid Them)</h2>
+  <p>These are the patterns that slow people down or build habits that need unlearning later. Knowing what not to do saves as much time as knowing what to do.</p>
+
+  <div class="mistake">
+    <div class="mistake-label">Mistake 1: The Box Trap</div>
+    <p><strong>What it looks like:</strong> You memorise one fingering pattern in one position and never leave it. You "know" the minor pentatonic but only from the 5th fret on the A string.</p>
+    <p><strong>Why it's a problem:</strong> You can't find the scale anywhere else on the neck. You can't connect positions. You're locked in a 4-fret box on a 20+ fret instrument.</p>
+    <p><strong>Fix:</strong> Learn scales across the entire fretboard, not in boxes. Single-string practice breaks box dependency. Always practice from different starting frets and positions.</p>
+  </div>
+
+  <div class="mistake">
+    <div class="mistake-label">Mistake 2: Mechanical Linear Running</div>
+    <p><strong>What it looks like:</strong> Every practice session is the same: root to octave, octave to root, repeat. Up down up down.</p>
+    <p><strong>Why it's a problem:</strong> It builds a finger sequence, not musical knowledge. You can play the scale on autopilot but can't use it creatively. It's also boring, which means you'll stop doing it.</p>
+    <p><strong>Fix:</strong> Play scales in intervals (3rds, 4ths, 6ths). Start from different notes. Play in random order. Use backing tracks. Make it musical from day one.</p>
+  </div>
+
+  <div class="mistake">
+    <div class="mistake-label">Mistake 3: Fingers Without Ears</div>
+    <p><strong>What it looks like:</strong> You can play the scale with your eyes closed but can't hear it when someone else plays it. You've built motor memory without auditory memory.</p>
+    <p><strong>Why it's a problem:</strong> In real music, you need to hear what fits. Your fingers can't tell you that. Only your ears can.</p>
+    <p><strong>Fix:</strong> Sing notes before playing them. Play along with recordings. Transcribe bass lines. Do ear training: play a drone note and sing each scale degree against it.</p>
+  </div>
+
+  <div class="mistake">
+    <div class="mistake-label">Mistake 4: Collecting Scales Without Applying Them</div>
+    <p><strong>What it looks like:</strong> You "know" 12 scales but can't use any of them over an actual song. Scale practice and music are two separate activities in your mind.</p>
+    <p><strong>Why it's a problem:</strong> Scales are tools, not trophies. Knowing a scale you never use is like owning a drill you never unbox.</p>
+    <p><strong>Fix:</strong> Apply every scale to music the same day you learn it. Backing tracks. Real songs. Jamming. The scale isn't learned until you've used it musically.</p>
+  </div>
+
+  <div class="mistake">
+    <div class="mistake-label">Mistake 5: Learning Shapes Without Understanding Construction</div>
+    <p><strong>What it looks like:</strong> You know the finger pattern for a major scale but can't tell someone the interval formula (W-W-H-W-W-W-H). You play dots on a diagram.</p>
+    <p><strong>Why it's a problem:</strong> Without understanding construction, you can't build scales in unfamiliar keys, can't adapt when something sounds wrong, and can't understand why certain notes work over certain chords.</p>
+    <p><strong>Fix:</strong> Learn the interval formula for every scale. Construct scales from scratch in new keys without diagrams. If you can build it, you understand it.</p>
+  </div>
+
+  <div class="mistake">
+    <div class="mistake-label">Mistake 6: Marathon Sessions Instead of Daily Practice</div>
+    <p><strong>What it looks like:</strong> You skip practice all week, then do 2 hours on Sunday.</p>
+    <p><strong>Why it's a problem:</strong> The research is unambiguous on this. Distributed practice (spread over days) beats massed practice (crammed into one session) by a large margin. Your brain consolidates during rest. No rest between sessions = no consolidation.</p>
+    <p><strong>Fix:</strong> 15-20 minutes daily, 5 days a week. Set a timer. When it goes off, stop. Come back tomorrow. Trust the process.</p>
+  </div>
+</div>
+
+<!-- READINESS TESTS -->
+<div class="section" id="readiness">
+  <h2>Readiness Tests</h2>
+  <p>How do you know when you've actually internalised a scale vs just memorised a pattern? These tests separate "I can run through it" from "I own it."</p>
+
+  <div class="card">
+    <div class="card-title">Test 1: Random Root</div>
+    <p>Someone names a note. You play the scale from that note immediately, no hesitation, no looking at a diagram. If you need to think for more than 2-3 seconds, you don't own it yet.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Test 2: Name as You Play</div>
+    <p>Play the scale at a moderate tempo and name every note aloud as your finger hits it. If you can't do both simultaneously, your knowledge is still in your fingers, not your brain.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Test 3: Single String</div>
+    <p>Play the full scale on one string. No position-based crutches. If you can do this, you understand the interval construction, not just the shape.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Test 4: Sing Then Play</div>
+    <p>Sing the next note before you play it. If you can hear it in your head before your finger moves, the scale is in your ear as well as your hands. That's true internalisation.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Test 5: Musical Application</div>
+    <p>Play a backing track in the scale's key. Can you create a bass line that sounds good, lands on chord tones, and uses scale passing tones naturally? If yes, you're done. The scale is a tool you can use, not an exercise you can perform.</p>
+  </div>
+  <div class="card">
+    <div class="card-title">Test 6: Build It</div>
+    <p>Name the interval formula from memory. Then construct the scale in a key you've never practiced. If you can build it from the formula alone, you understand it at a structural level.</p>
+  </div>
+
+  <h3>Maintenance Schedule</h3>
+  <p>Once a scale passes all six tests, move it to maintenance mode. The spaced repetition schedule:</p>
+  <table>
+    <tr><th>Time Since Mastery</th><th>Review Frequency</th><th>Duration</th></tr>
+    <tr><td>Week 1-2</td><td>Every other day</td><td>3 min</td></tr>
+    <tr><td>Week 3-4</td><td>Twice a week</td><td>2 min</td></tr>
+    <tr><td>Month 2-3</td><td>Once a week</td><td>2 min</td></tr>
+    <tr><td>Month 4+</td><td>Once every 2 weeks</td><td>2 min</td></tr>
+  </table>
+  <p>If a review feels shaky, bump it back up to "every other day" for a week. No shame in it. That's how spaced repetition works.</p>
+</div>
+
+</div>
+
+<script>
+function showSection(id) {
+  document.querySelectorAll('.section').forEach(s => s.classList.remove('active'));
+  document.querySelectorAll('.nav button').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  window.scrollTo({top: 0, behavior: 'smooth'});
+}
+
+function toggleWeek(el) {
+  const body = el.nextElementSibling;
+  const isOpen = body.classList.contains('open');
+  body.classList.toggle('open');
+  el.querySelector('span:last-child').textContent = isOpen ? '+' : '\u2212';
+}
+
+document.querySelector('.week-body').classList.add('open');
+document.querySelector('.week-header span:last-child').textContent = '\u2212';
+</script>
+
+</body>
+</html>
