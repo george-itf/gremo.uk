@@ -1,0 +1,339 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>George Gremo</title>
+<style>
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --forest: #3f6650;
+    --forest-light: #4e7a60;
+    --bark: #6b4832;
+    --bark-light: #8a6248;
+    --bark-pale: #a68060;
+    --cream: #f4efe4;
+    --cream-warm: #ebe4d8;
+    --sand: #d2c8b6;
+    --sand-dark: #b0a594;
+    --ink: #2a2420;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    font-family: -apple-system, 'Segoe UI', Helvetica, Arial, sans-serif;
+    background: var(--cream);
+    color: var(--ink);
+    min-height: 100vh;
+  }
+
+  .layout {
+    display: flex;
+    min-height: 100vh;
+  }
+
+  /* ── Left: forest green, sticky, vertically centred ── */
+  .panel-left {
+    width: 34%;
+    height: 100vh;
+    position: sticky;
+    top: 0;
+    background: var(--forest);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 3.5rem 2.5rem;
+    position: relative;
+  }
+
+  /* Solid bark stripe divider */
+  .panel-left::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: 0;
+    height: 100%;
+    width: 4px;
+    background: var(--bark);
+  }
+
+  .panel-top {
+    position: relative;
+    z-index: 1;
+  }
+
+  .mark {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    font-size: 0.65rem;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.25;
+    margin-bottom: 3rem;
+  }
+
+  .identity h1 {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    font-size: 2.8rem;
+    font-weight: 400;
+    line-height: 1.08;
+    color: var(--cream);
+    letter-spacing: -0.015em;
+  }
+
+  .identity h1 .surname {
+    display: block;
+    opacity: 0.6;
+  }
+
+  .name-rule {
+    width: 28px;
+    height: 2px;
+    background: var(--bark);
+    margin-top: 1.75rem;
+    opacity: 0.55;
+  }
+
+  .panel-bottom {
+    position: relative;
+    z-index: 1;
+  }
+
+  .location {
+    font-size: 0.6rem;
+    font-weight: 400;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--cream);
+    opacity: 0.3;
+  }
+
+  /* ── Right: cream panel ── */
+  .panel-right {
+    width: 66%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    padding: 4.5rem 5rem;
+    position: relative;
+    background: var(--cream);
+  }
+
+  .section-label {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    font-size: 0.62rem;
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    color: var(--bark-pale);
+    margin-bottom: 1.75rem;
+  }
+
+  .links {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .link-item {
+    display: grid;
+    grid-template-columns: 2rem 1fr auto;
+    align-items: center;
+    gap: 1.25rem;
+    padding: 1.5rem 0;
+    text-decoration: none;
+    border-bottom: 1px solid var(--sand);
+    transition: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    cursor: pointer;
+    position: relative;
+  }
+
+  .link-item:first-child {
+    border-top: 1px solid var(--sand);
+  }
+
+  /* Bark accent bar on hover */
+  .link-item::before {
+    content: '';
+    position: absolute;
+    left: -0.4rem;
+    top: 18%;
+    height: 64%;
+    width: 2px;
+    background: var(--bark);
+    transform: scaleY(0);
+    transform-origin: center;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .link-item:hover {
+    padding-left: 0.85rem;
+  }
+
+  .link-item:hover::before {
+    transform: scaleY(1);
+  }
+
+  .link-number {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    font-size: 0.78rem;
+    font-style: italic;
+    color: var(--sand-dark);
+    transition: color 0.3s ease;
+  }
+
+  .link-item:hover .link-number {
+    color: var(--forest);
+  }
+
+  .link-content {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .link-label {
+    font-family: Georgia, 'Palatino Linotype', serif;
+    font-size: 1.45rem;
+    font-weight: 400;
+    color: var(--ink);
+    line-height: 1.25;
+    transition: color 0.3s ease;
+  }
+
+  .link-item:hover .link-label {
+    color: var(--forest);
+  }
+
+  .link-desc {
+    font-size: 0.7rem;
+    font-weight: 300;
+    color: var(--bark-pale);
+    margin-top: 0.2rem;
+    letter-spacing: 0.01em;
+  }
+
+  .link-arrow {
+    font-size: 1rem;
+    color: var(--sand);
+    opacity: 0;
+    transform: translateX(-6px);
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  }
+
+  .link-item:hover .link-arrow {
+    opacity: 1;
+    transform: translateX(0);
+    color: var(--forest);
+  }
+
+  .right-footer {
+    margin-top: 3.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .footer-rule {
+    width: 22px;
+    height: 1px;
+    background: var(--bark);
+    opacity: 0.25;
+  }
+
+  .footer-text {
+    font-size: 0.55rem;
+    letter-spacing: 0.22em;
+    text-transform: uppercase;
+    color: var(--sand-dark);
+  }
+
+  /* ── Mobile ── */
+  @media (max-width: 768px) {
+    .layout { flex-direction: column; }
+    .panel-left {
+      width: 100%;
+      height: auto;
+      position: relative;
+      padding: 2.5rem 2rem;
+    }
+    .panel-left::after {
+      right: auto; top: auto;
+      bottom: 0; left: 0;
+      width: 100%; height: 3px;
+    }
+    .mark { margin-bottom: 2rem; }
+    .identity h1 { font-size: 2.2rem; }
+    .panel-right {
+      width: 100%;
+      padding: 2.5rem 2rem 3rem;
+    }
+  }
+
+  @media (max-width: 480px) {
+    .identity h1 { font-size: 1.85rem; }
+    .link-label { font-size: 1.15rem; }
+    .link-item { grid-template-columns: 1.5rem 1fr auto; gap: 0.85rem; }
+    .panel-left { padding: 2rem 1.5rem; }
+    .panel-right { padding: 2rem 1.5rem 2.5rem; }
+  }
+</style>
+</head>
+<body>
+  <div class="layout">
+    <aside class="panel-left">
+      <div class="panel-top">
+        <p class="mark">GG</p>
+        <div class="identity">
+          <h1>George<span class="surname">Gremo</span></h1>
+          <div class="name-rule"></div>
+        </div>
+      </div>
+      <div class="panel-bottom">
+        <p class="location">Kent, England</p>
+      </div>
+    </aside>
+    <main class="panel-right">
+      <p class="section-label">Elsewhere</p>
+      <nav class="links">
+        <a href="https://invictatools.co.uk" target="_blank" rel="noopener" class="link-item">
+          <span class="link-number">01</span>
+          <div class="link-content">
+            <span class="link-label">Invicta Tools & Fixings</span>
+            <span class="link-desc">Trade tools and supplies since 1996</span>
+          </div>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="https://www.linkedin.com/in/georgegremo/" target="_blank" rel="noopener" class="link-item">
+          <span class="link-number">02</span>
+          <div class="link-content">
+            <span class="link-label">LinkedIn</span>
+            <span class="link-desc">Professional profile</span>
+          </div>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="https://george-itf.github.io/fretboard" target="_blank" rel="noopener" class="link-item">
+          <span class="link-number">03</span>
+          <div class="link-content">
+            <span class="link-label">Fretboard</span>
+            <span class="link-desc">Interactive fretboard tool</span>
+          </div>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+        <a href="mailto:georgegremo@hotmail.com" class="link-item">
+          <span class="link-number">04</span>
+          <div class="link-content">
+            <span class="link-label">Contact</span>
+            <span class="link-desc">Get in touch directly</span>
+          </div>
+          <span class="link-arrow">&rarr;</span>
+        </a>
+      </nav>
+      <div class="right-footer">
+        <span class="footer-rule"></span>
+        <span class="footer-text">gremo.uk</span>
+      </div>
+    </main>
+  </div>
+</body>
+</html>
